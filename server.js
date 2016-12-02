@@ -59,18 +59,28 @@ app.get('/new/:longurl(*)', function (req, res) {
             }
             else if (docs.length == 0) {
                 
-                var doc = {original_url: urlParam, short_urlID: 2};
-                  shorturls.insertOne(doc, 
-                    function (err, result){
-                      if (err) {
-                        console.log( 'Error: Inserting document' );
-                        res.json({error: "Error: Insert operation failed " + err})
-                      }
-                      else {
-                        var shortUrl = req.protocol + '://' + req.get('host') + '/' + doc.short_urlID;
-                        res.json({original_url: urlParam, short_url: shortUrl});
-                      }
-                    })
+                // Perform a total count command
+                shorturls.count(function(err, count) {
+                  if (err) console.log("Error: ", err);
+                  else console.log("Success Count = ", count);
+                });
+                
+                var doc = {
+                  "original_url": urlParam, 
+                  "short_urlID": 2
+                };
+                
+                shorturls.insertOne(doc, 
+                  function (err, result){
+                    if (err) {
+                      console.log( 'Error: Inserting document' );
+                      res.json({error: "Error: Insert operation failed " + err})
+                    }
+                    else {
+                      var shortUrl = req.protocol + '://' + req.get('host') + '/' + doc.short_urlID;
+                      res.json({original_url: urlParam, short_url: shortUrl});
+                    }
+                  })
                 // }
               // })
             }
