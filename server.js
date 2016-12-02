@@ -7,7 +7,8 @@ var validurl = require('valid-url');
 
 var mongodb = require('mongodb');
 var MongoClient = mongodb.MongoClient;
-var url = 'mongodb://localhost:27017/erichoog-db';
+//var url = 'mongodb://localhost:27017/erichoog-db';
+var url = process.env.MONGOLAB_URI;
 
 app.locals.pretty = true;
 app.set('port', (process.env.PORT || 8080));
