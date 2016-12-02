@@ -60,7 +60,7 @@ app.get('/new/:longurl(*)', function (req, res) {
             else if (docs.length == 0) {
                 
                 // Perform a total count command
-                shorturls.count(function(err, count) {
+                shorturls.find({}).count(function(err, count) {
                   if (err) console.log("Error: ", err);
                   else console.log("Success Count = ", count);
                 });
