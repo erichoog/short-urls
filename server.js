@@ -58,11 +58,14 @@ app.get('/new/:longurl(*)', function (req, res) {
               res.json({original_url: urlParam, short_url: shortUrl});
             }
             else if (docs.length == 0) {
-                
+                console.log("TEST1");
                 // Perform a total count command
                 shorturls.find({}).count(function(err, count) {
-                  if (err) console.log("Error: ", err);
-                  else console.log("Success Count = ", count);
+                  if (err) {console.log("Error: ", err);}
+                  else {
+                    console.log("Success Count = ", count);
+                    console.log("TEST2");
+                  }
                 });
                 
                 var doc = {
@@ -70,13 +73,17 @@ app.get('/new/:longurl(*)', function (req, res) {
                   "short_urlID": 2
                 };
                 
+                
+                console.log("TEST3");
                 shorturls.insertOne(doc, 
                   function (err, result){
                     if (err) {
+                      console.log("TEST4 - error");
                       console.log( 'Error: Inserting document' );
                       res.json({error: "Error: Insert operation failed " + err})
                     }
                     else {
+                      console.log("TEST5 -good");
                       var shortUrl = req.protocol + '://' + req.get('host') + '/' + doc.short_urlID;
                       res.json({original_url: urlParam, short_url: shortUrl});
                     }
