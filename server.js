@@ -45,8 +45,8 @@ app.get('/new/:longurl(*)', function (req, res) {
       console.log('Connection established to', url);
       
       var shorturls = db.collection( 'shorturls' );
-      shorturls.find({"original_url": urlParam})
-        .toArray( function( err, docs ) {
+      shorturls.findOne({"original_url": urlParam},
+        function( err, docs ) {
           if ( err ) {
             console.log( 'Error: Find operation failed' );
             res.json({error: "Error: Find operation failed " + err})
@@ -75,18 +75,18 @@ app.get('/new/:longurl(*)', function (req, res) {
                 
                 
                 console.log("TEST3");
-                shorturls.insertOne(doc).then( 
-                  function (result){
-                    // if (err) {
-                    //   console.log("TEST4 - error");
-                    //   console.log( 'Error: Inserting document' );
-                    //   res.json({error: "Error: Insert operation failed " + err})
-                    // }
-                    // else {
+                shorturls.insertOne(doc, 
+                  function (err, result){
+                    if (err) {
+                      console.log("TEST4 - error");
+                      console.log( 'Error: Inserting document' );
+                      res.json({error: "Error: Insert operation failed " + err})
+                    }
+                    else {
                       console.log("TEST5 -good");
                       var shortUrl = req.protocol + '://' + req.get('host') + '/' + doc.short_urlID;
                       res.json({original_url: urlParam, short_url: shortUrl});
-                    // }
+                    }
                   })
                 // }
               // })
