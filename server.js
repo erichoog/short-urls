@@ -131,7 +131,7 @@ app.get('/:id', function (req, res) {
               res.redirect(docs[0].original_url);
             }
             else if (docs.length == 0) {
-              res.json({error: "There was an error finding the original_url"});
+              res.json({error: "There was an error finding the original_url.  Param: " + req.params.id.toString() + ' Doc Count: ' + docs.length});
             }
             else { 
               res.json({error: "There was an error finding the original_url - too many"});
