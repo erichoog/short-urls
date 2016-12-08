@@ -75,18 +75,18 @@ app.get('/new/:longurl(*)', function (req, res) {
                 
                 
                 console.log("TEST3");
-                shorturls.insertOne(doc, 
-                  function (err, result){
-                    if (err) {
-                      console.log("TEST4 - error");
-                      console.log( 'Error: Inserting document' );
-                      res.json({error: "Error: Insert operation failed " + err})
-                    }
-                    else {
+                shorturls.insertOne(doc).then( 
+                  function (result){
+                    // if (err) {
+                    //   console.log("TEST4 - error");
+                    //   console.log( 'Error: Inserting document' );
+                    //   res.json({error: "Error: Insert operation failed " + err})
+                    // }
+                    // else {
                       console.log("TEST5 -good");
                       var shortUrl = req.protocol + '://' + req.get('host') + '/' + doc.short_urlID;
                       res.json({original_url: urlParam, short_url: shortUrl});
-                    }
+                    // }
                   })
                 // }
               // })
@@ -124,7 +124,8 @@ app.get('/:id', function (req, res) {
         .toArray( function( err, docs ) {
           if ( err ) {
             console.log( 'Error: Find operation failed' );
-          } else {
+          } 
+          else {
             if (docs.length == 1) {
               console.log('Found url.  Redirecting to: ' + docs[0].original_url );
               res.redirect(docs[0].original_url);
