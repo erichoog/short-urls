@@ -45,7 +45,7 @@ app.get('/new/:longurl(*)', function (req, res) {
       console.log('Connection established to', url);
       
       var shorturls = db.collection( 'shorturls' );
-      shorturls.findOne({"original_url": urlParam},
+      shorturls.find({original_url: urlParam}).toArray(
         function( err, docs ) {
           if ( err ) {
             console.log( 'Error: Find operation failed' );
@@ -120,7 +120,7 @@ app.get('/:id', function (req, res) {
       console.log('Connection established to', url);
       
       var shorturls = db.collection( 'shorturls' );
-      shorturls.find({"short_urlID": req.params.id.toString()})
+      shorturls.find({short_urlID: req.params.id.toString()})
         .toArray( function( err, docs ) {
           if ( err ) {
             console.log( 'Error: Find operation failed' );
