@@ -130,8 +130,11 @@ app.get('/:id', function (req, res) {
               console.log('Found url.  Redirecting to: ' + docs[0].original_url );
               res.redirect(docs[0].original_url);
             }
-            else {
+            else if (docs.length == 0) {
               res.json({error: "There was an error finding the original_url"});
+            }
+            else { 
+              res.json({error: "There was an error finding the original_url - too many"});
             }
           }
         });
