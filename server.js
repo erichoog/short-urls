@@ -26,7 +26,7 @@ var db;
 MongoClient.connect(url, function (err, database) {
     if (err) {
       console.log('Unable to connect to the mongoDB server. Error:', err);
-      res.json({error: "Unable to connect to the mongoDB server. Error:" + err})
+      //res.json({error: "Unable to connect to the mongoDB server. Error:" + err})
     } 
     else {
       console.log('Connection established to', url);
@@ -163,10 +163,8 @@ app.get('/:id', function (req, res) {
 });
 
 var findDocuments = function(short_urlID, db, callback) {
-  // Get the documents collection
-  var collection = db.collection('documents');
   // Find some documents
-  collection.find({"short_urlID": short_urlID})
+  db.find({"short_urlID": short_urlID})
     .toArray(function(err, docs) {
       assert.equal(err, null);
       console.log("Found the following records");
