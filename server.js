@@ -126,9 +126,24 @@ app.get('/:id', function (req, res) {
   // get the mongo document that matches the id passed in.
   // redirect to that website
       var reqParam = req.params.id.toString();
-      var doc = findDocuments(reqParam, db, function(docs) {
-        console.log(docs);
-      });
+      // var doc = findDocuments(reqParam, db, function(docs) {
+      //   console.log(docs);
+      // });
+      
+      var collection = db.collection('shorturls');
+      // Find some documents
+      collection.findOne({"short_urlID": reqParam}, function(err, doc) {
+        assert.equal(err, null);
+        console.log("Found the following records");
+        console.log(doc);
+        if (doc) {
+      			res.json(doc)
+    		} else {
+      			res.send(JSON.stringify({
+      				error : 'Error'
+      			}))
+      		}
+      });    
       
       //console.log(doc);
       // var shorturls = db.collection( 'shorturls' );
@@ -164,14 +179,7 @@ app.get('/:id', function (req, res) {
 
 var findDocuments = function(short_urlID, db, callback) {
   // Get the documents collection
-  var collection = db.collection('shorturls');
-  // Find some documents
-  collection.findOne({"short_urlID": short_urlID}, function(err, doc) {
-      assert.equal(err, null);
-      console.log("Found the following records");
-      console.log(doc);
-      callback(doc);
-  });      
+    
 }
 
       
