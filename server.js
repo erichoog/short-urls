@@ -159,7 +159,7 @@ app.get('/:id', function (req, res) {
 
       //Close connection
       //db.close();
-    }
+  
 });
 
 var findDocuments = function(short_urlID, db, callback) {
