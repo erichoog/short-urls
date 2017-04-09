@@ -121,23 +121,23 @@ app.get('/:id', function (req, res) {
       
       var shorturls = db.collection( 'shorturls' );
       var reqParam = req.params.id.toString();
-      shorturls.find({short_urlID: reqParam}, {}, {}, 
-        function( err, docs ) {
+      shorturls.findOne({'short_urlID': reqParam}, function( err, doc ) {
           if ( err ) {
             console.log( 'Error: Find operation failed' );
           } 
           else {
-            if (docs.length == 1) {
-              console.log('Found url.  Redirecting to: ' + docs[0].original_url );
-              res.redirect(docs[0].original_url);
-            }
-            else if (docs.length == 0) {
-              res.json({error: "There was an error finding the original_url.  Param: " + req.params.id.toString() + ' Doc Count: ' + docs.length});
-            }
-            else { 
-              res.json({error: "There was an error finding the original_url - too many"});
-              console.log(docs);
-            }
+            console.log(doc);
+            // if (docs.length == 1) {
+            //   console.log('Found url.  Redirecting to: ' + docs[0].original_url );
+            //   res.redirect(docs[0].original_url);
+            // }
+            // else if (docs.length == 0) {
+            //   res.json({error: "There was an error finding the original_url.  Param: " + req.params.id.toString() + ' Doc Count: ' + docs.length});
+            // }
+            // else { 
+            //   res.json({error: "There was an error finding the original_url - too many"});
+            //   console.log(docs);
+            //}
           }
         });
 
