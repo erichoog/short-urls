@@ -122,10 +122,10 @@ app.get('/:id', function (req, res) {
       
       var reqParam = req.params.id.toString();
       var doc = findDocuments(reqParam, db, function(docs) {
-        return docs;
+        console.log(docs);
       });
       
-      console.log(doc);
+      //console.log(doc);
       // var shorturls = db.collection( 'shorturls' );
       // var reqParam = req.params.id.toString();
       // shorturls.find({'short_urlID': reqParam})
@@ -162,7 +162,7 @@ var findDocuments = function(short_urlID, db, callback) {
   // Get the documents collection
   var collection = db.collection('documents');
   // Find some documents
-  collection.find({'short_urlID': short_urlID})
+  collection.find({"short_urlID": short_urlID})
     .toArray(function(err, docs) {
       assert.equal(err, null);
       console.log("Found the following records");
