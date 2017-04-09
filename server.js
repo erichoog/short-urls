@@ -163,13 +163,14 @@ app.get('/:id', function (req, res) {
 });
 
 var findDocuments = function(short_urlID, db, callback) {
+  // Get the documents collection
+  var collection = db.collection('shorturls');
   // Find some documents
-  db.find({"short_urlID": short_urlID})
-    .toArray(function(err, docs) {
+  db.findOne({"short_urlID": short_urlID}, function(err, doc) {
       assert.equal(err, null);
       console.log("Found the following records");
-      console.log(docs);
-      callback(docs);
+      console.log(doc);
+      callback(doc);
   });      
 }
 
