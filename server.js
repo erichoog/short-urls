@@ -111,6 +111,7 @@ app.get('/new/:longurl(*)', function (req, res) {
 app.get('/:id', function (req, res) {
   // get the mongo document that matches the id passed in.
   // redirect to that website
+  console.log('get');
   MongoClient.connect(url, function (err, db) {
     if (err) {
       console.log('Unable to connect to the mongoDB server. Error:', err);
