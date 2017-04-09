@@ -133,6 +133,7 @@ app.get('/:id', function (req, res) {
       var collection = db.collection('shorturls');
       // Find some documents
       collection.findOne({"short_urlID": reqParam}, function(err, doc) {
+        console.log(err);
         assert.equal(err, null);
         console.log("Found the following records");
         console.log(doc);
