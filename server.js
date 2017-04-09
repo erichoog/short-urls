@@ -21,6 +21,19 @@ app.listen(app.get('port'), function() {
   console.log('Node app is running on port', app.get('port'));
 });
 
+var db;
+
+MongoClient.connect(url, function (err, database) {
+    if (err) {
+      console.log('Unable to connect to the mongoDB server. Error:', err);
+      res.json({error: "Unable to connect to the mongoDB server. Error:" + err})
+    } 
+    else {
+      console.log('Connection established to', url);
+      db = database;
+    }
+});
+
 app.get('/', function (req, res) {
   res.render('index', { title: 'URL Shortener microservice', mainHeader: 'API Basejump: URL Shortener microservice' });
 });
@@ -112,14 +125,6 @@ app.get('/new/:longurl(*)', function (req, res) {
 app.get('/:id', function (req, res) {
   // get the mongo document that matches the id passed in.
   // redirect to that website
-  MongoClient.connect(url, function (err, db) {
-    if (err) {
-      console.log('Unable to connect to the mongoDB server. Error:', err);
-      res.json({error: "Unable to connect to the mongoDB server. Error:" + err})
-    } 
-    else {
-      console.log('Connection established to', url);
-      
       var reqParam = req.params.id.toString();
       var doc = findDocuments(reqParam, db, function(docs) {
         console.log(docs);
@@ -153,9 +158,8 @@ app.get('/:id', function (req, res) {
         // });
 
       //Close connection
-      db.close();
+      //db.close();
     }
-  });
 });
 
 var findDocuments = function(short_urlID, db, callback) {
