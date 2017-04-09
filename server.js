@@ -125,7 +125,7 @@ app.get('/new/:longurl(*)', function (req, res) {
 app.get('/:id', function (req, res) {
   // get the mongo document that matches the id passed in.
   // redirect to that website
-      var reqParam = req.params.id.toString();
+      var reqParam = req.params.id;
       // var doc = findDocuments(reqParam, db, function(docs) {
       //   console.log(docs);
       // });
