@@ -132,7 +132,7 @@ app.get('/:id', function (req, res) {
       
       var collection = db.collection('shorturls');
       // Find some documents
-      collection.find({short_urlID: reqParam}).toArray(function(err, docs) {
+      collection.find({"short_urlID": reqParam}).toArray(function(err, docs) {
       //collection.find({}).toArray(function(err, docs) {
         console.log(err);
         //assert.equal(er, null);
