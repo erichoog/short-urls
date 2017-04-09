@@ -7,6 +7,7 @@ var validurl = require('valid-url');
 
 var mongodb = require('mongodb');
 var MongoClient = mongodb.MongoClient;
+var assert = require('assert');
 //var url = 'mongodb://localhost:27017/erichoog-db';
 var url = process.env.MONGOLAB_URI;
 
@@ -119,14 +120,20 @@ app.get('/:id', function (req, res) {
     else {
       console.log('Connection established to', url);
       
-      var shorturls = db.collection( 'shorturls' );
       var reqParam = req.params.id.toString();
-      shorturls.find({'short_urlID': reqParam})
-        .toArray(function( err, docs ) {
-           //assert.equal(err, null);
-            //console.log("Found the following records");
-            //console.log(docs);
-            callbackFunc(docs);
+      var doc = findDocuments(reqParam, db, function(docs) {
+        return docs;
+      });
+      
+      console.log(doc);
+      // var shorturls = db.collection( 'shorturls' );
+      // var reqParam = req.params.id.toString();
+      // shorturls.find({'short_urlID': reqParam})
+      //   .toArray(function( err, docs ) {
+      //     //assert.equal(err, null);
+      //       //console.log("Found the following records");
+      //       //console.log(docs);
+      //       callbackFunc(docs);
           // if ( err ) {
           //   console.log( 'Error: Find operation failed' );
           // } 
@@ -143,7 +150,7 @@ app.get('/:id', function (req, res) {
           //     console.log(docs);
           //   }
           // }
-        });
+        // });
 
       //Close connection
       db.close();
@@ -151,8 +158,17 @@ app.get('/:id', function (req, res) {
   });
 });
 
-function callbackFunc(docs){
-  console.log(docs);
+var findDocuments = function(short_urlID, db, callback) {
+  // Get the documents collection
+  var collection = db.collection('documents');
+  // Find some documents
+  collection.find({'short_urlID': short_urlID})
+    .toArray(function(err, docs) {
+      assert.equal(err, null);
+      console.log("Found the following records");
+      console.log(docs);
+      callback(docs);
+  });      
 }
 
       
