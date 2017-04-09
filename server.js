@@ -121,8 +121,8 @@ app.get('/:id', function (req, res) {
       
       var shorturls = db.collection( 'shorturls' );
       var reqParam = req.params.id.toString();
-      shorturls.find({short_urlID: reqParam})
-        .toArray( function( err, docs ) {
+      shorturls.find({short_urlID: reqParam}, {}, {}, 
+        function( err, docs ) {
           if ( err ) {
             console.log( 'Error: Find operation failed' );
           } 
