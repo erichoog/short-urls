@@ -63,7 +63,7 @@ app.get('/new/:longurl(*)', function (req, res) {
           console.log("TEST1");
 
           collection.aggregate([
-              { $sort : { "short_urlID": 1 }} 
+              { $sort : { "short_urlID": -1 }} 
             ], { cursor: { batchSize: 1 } 
               
             }).toArray().then(function(docs) {
