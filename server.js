@@ -125,31 +125,19 @@ app.get('/new/:longurl(*)', function (req, res) {
 app.get('/:id', function (req, res) {
   // get the mongo document that matches the id passed in.
   // redirect to that website
-      var reqParam = req.params.id;
-      // var doc = findDocuments(reqParam, db, function(docs) {
-      //   console.log(docs);
-      // });
-      getShortUrl(reqParam, db, function(items) {
-        console.log(items);
-        
-        if (items) {
-      			res.json(items)
-    		} else {
-      			res.send(JSON.stringify({
-      				error : 'Error'
-      			}))
-      		}
-      });
-      // var collection = db.collection('shorturls');
-      // // Find some documents
-      // collection.find({"short_urlID": reqParam}).toArray(function(err, docs) {
-      // //collection.find({}).toArray(function(err, docs) {
-      //   console.log(err);
-      //   //assert.equal(er, null);
-      //   console.log("Found the following records");
-      //   console.log(docs);
-        
-      // });    
+    var reqParam = req.params.id;
+
+    getShortUrl(reqParam, db, function(items) {
+      console.log(items);
+      
+      if (items) {
+    			res.json(items)
+  		} else {
+    			res.send(JSON.stringify({
+    				error : 'Error'
+    			}))
+    		}
+    });
       
       //console.log(doc);
       // var shorturls = db.collection( 'shorturls' );
@@ -185,10 +173,10 @@ app.get('/:id', function (req, res) {
 
 function getShortUrl(short_urlID, db, callback) {
     var collection = db.collection('shorturls');
-      collection.find().toArray(function (err, items) {
-        console.log(items);       
-        return callback(items);     
-      });
+    collection.find({short_urlID: short_urlID}).toArray(function (err, items) {
+      console.log(items);       
+      return callback(items);     
+    });
   }
 
 
