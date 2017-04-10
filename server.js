@@ -50,74 +50,51 @@ app.get('/new/:longurl(*)', function (req, res) {
   }
   else {
     // if valid store in MongoDB and create a number for that url
-    MongoClient.connect(url, function (err, db) {
-    if (err) {
-      console.log('Unable to connect to the mongoDB server. Error:', err);
-      res.json({error: "Unable to connect to the mongoDB server. Error:" + err})
-    } 
-    else {
-      console.log('Connection established to', url);
-      
-      var shorturls = db.collection( 'shorturls' );
-      shorturls.find({original_url: urlParam}).toArray(
-        function( err, docs ) {
-          if ( err ) {
-            console.log( 'Error: Find operation failed' );
-            res.json({error: "Error: Find operation failed " + err})
-          } else {
-            if (docs.length == 1) {
-              console.log('Found existing shorturl.' + docs[0]);
-              // return original_url and short_url
-              var shortUrl = req.protocol + '://' + req.get('host') + '/' + docs[0].short_urlID;
-              res.json({original_url: urlParam, short_url: shortUrl});
-            }
-            else if (docs.length == 0) {
-                console.log("TEST1");
-                // Perform a total count command
-                shorturls.find({}).count(function(err, count) {
-                  if (err) {console.log("Error: ", err);}
-                  else {
-                    console.log("Success Count = ", count);
-                    console.log("TEST2");
-                  }
-                });
-                
-                var doc = {
-                  "original_url": urlParam, 
-                  "short_urlID": 2
-                };
-                
-                
-                console.log("TEST3");
-                shorturls.insertOne(doc, 
-                  function (err, result){
-                    if (err) {
-                      console.log("TEST4 - error");
-                      console.log( 'Error: Inserting document' );
-                      res.json({error: "Error: Insert operation failed " + err})
-                    }
-                    else {
-                      console.log("TEST5 -good");
-                      var shortUrl = req.protocol + '://' + req.get('host') + '/' + doc.short_urlID;
-                      res.json({original_url: urlParam, short_url: shortUrl});
-                    }
-                  })
-                // }
-              // })
-            }
-            else {
-              res.json({error: "There was an error creating short url"});
-            }
+    var collection = db.collection( 'shorturls' );
+    collection.find({original_url: urlParam}).toArray().then(
+      function( err, docs ) {
+        if ( err ) {
+          console.log( 'Error: Find operation failed' );
+          res.json({error: "Error: Find operation failed " + err})
+        } else {
+          if (docs.length == 1) {
+            console.log('Found existing shorturl.' + docs[0]);
+            // return original_url and short_url
+            var shortUrl = req.protocol + '://' + req.get('host') + '/' + docs[0].short_urlID;
+            res.json({original_url: urlParam, short_url: shortUrl});
           }
-        });
+          else if (docs.length == 0) {
+            console.log("TEST1");
 
-      //Close connection
-      db.close();
-    }
-  });
-    
-    
-    
+            collection.aggregate([
+                { $sort : { "short_urlID": 1 }} 
+              ], { cursor: { batchSize: 1 } 
+                
+              }).toArray().then(function(docs) {
+                  console.log(docs[0].short_urlID);
+              });
+            
+            var doc = {
+              "original_url": urlParam, 
+              "short_urlID": 2
+            };
+              
+          collection.insertOne(doc, 
+            function (err, result){
+              if (err) {
+                res.json({error: "Error: Insert operation failed " + err})
+              }
+              else {
+                var shortUrl = req.protocol + '://' + req.get('host') + '/' + doc.short_urlID;
+                res.json({original_url: urlParam, short_url: shortUrl});
+              }
+            })
+          }
+          else {
+            res.json({error: "There was an error creating short url"});
+          }
+        }
+      });
     
   }
 }); 
@@ -125,80 +102,35 @@ app.get('/new/:longurl(*)', function (req, res) {
 app.get('/:id', function (req, res) {
   // get the mongo document that matches the id passed in.
   // redirect to that website
-    var reqParam = req.params.id;
-
-   var collection = db.collection('shorturls');
-    collection.find({short_urlID: reqParam}).toArray().then(function (docs) {
-      
-      if (docs.length == 1) {
-        console.log('Found url.  Redirecting to: ' + docs[0].original_url );
-        res.redirect(docs[0].original_url);
-      }
-      else if (docs.length == 0) {
-        res.json({error: "There was an error finding the original_url.  Param: " + req.params.id.toString() + ' Doc Count: ' + docs.length});
-      }
-      else { 
-        res.json({error: "There was an error finding the original_url - too many"});
-        console.log(docs);
-      }
-      
-      
-    //   console.log(doc);       
-         
-    //   if (doc) {
-    // 			res.json(doc)
-  		// } else {
-    // 			res.send(JSON.stringify({
-    // 				error : 'Error'
-    // 			}))
-    // 		}
-    });
-      
-      //console.log(doc);
-      // var shorturls = db.collection( 'shorturls' );
-      // var reqParam = req.params.id.toString();
-      // shorturls.find({'short_urlID': reqParam})
-      //   .toArray(function( err, docs ) {
-      //     //assert.equal(err, null);
-      //       //console.log("Found the following records");
-      //       //console.log(docs);
-      //       callbackFunc(docs);
-          // if ( err ) {
-          //   console.log( 'Error: Find operation failed' );
-          // } 
-          // else {
-          //   if (docs.length == 1) {
-          //     console.log('Found url.  Redirecting to: ' + docs[0].original_url );
-          //     res.redirect(docs[0].original_url);
-          //   }
-          //   else if (docs.length == 0) {
-          //     res.json({error: "There was an error finding the original_url.  Param: " + req.params.id.toString() + ' Doc Count: ' + docs.length});
-          //   }
-          //   else { 
-          //     res.json({error: "There was an error finding the original_url - too many"});
-          //     console.log(docs);
-          //   }
-          // }
-        // });
-
-      //Close connection
-      //db.close();
-  
+  var reqParam = req.params.id;
+  var collection = db.collection('shorturls');
+  collection.find({short_urlID: reqParam}).toArray().then(function (docs) {
+    if (docs.length == 1) {
+      console.log('Found url.  Redirecting to: ' + docs[0].original_url );
+      res.redirect(docs[0].original_url);
+    }
+    else if (docs.length == 0) {
+      res.json({error: "There was an error finding the original_url.  Param: " + req.params.id.toString() + ' Doc Count: ' + docs.length});
+    }
+    else { 
+      res.json({error: "There was an error finding the original_url - too many"});
+      console.log(docs);
+    }
+  });
 });
 
-var getShortUrl = function(short_urlID, db, callback) {
-    var collection = db.collection('shorturls');
-    collection.findOne({'short_urlID': short_urlID}).then(function (doc) {
-      console.log(doc);       
-      callback(doc);     
-    });
-  }
+// var getShortUrl = function(short_urlID, db, callback) {
+//     var collection = db.collection('shorturls');
+//     collection.findOne({'short_urlID': short_urlID}).then(function (doc) {
+//       callback(doc);     
+//     });
+// }
 
 
-var findDocuments = function(short_urlID, db, callback) {
-  // Get the documents collection
+// var findDocuments = function(short_urlID, db, callback) {
+//   // Get the documents collection
     
-}
+// }
 
       
 
