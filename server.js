@@ -128,7 +128,7 @@ app.get('/:id', function (req, res) {
     var reqParam = req.params.id;
 
    var collection = db.collection('shorturls');
-    collection.find().toArray.then(function (doc) {
+    collection.find().toArray().then(function (doc) {
       console.log(doc);       
          
       if (doc) {
