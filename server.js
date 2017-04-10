@@ -89,7 +89,8 @@ app.get('/new/:longurl(*)', function (req, res) {
         else {
           res.json({error: "There was an error creating short url"});
         }
-  
+      });
+      }
 }); 
 
 app.get('/:id', function (req, res) {
