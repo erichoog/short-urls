@@ -60,22 +60,14 @@ app.get('/new/:longurl(*)', function (req, res) {
           res.json({original_url: urlParam, short_url: shortUrl});
         }
         else if (docs.length == 0) {
-          console.log("TEST1");
-
-          var doc = {
-            "original_url": urlParam, 
-            "short_urlID": 2
-          };
-          
-          
-
           collection.aggregate([
               { $sort : { "short_urlID": -1 }} 
             ], { cursor: { batchSize: 1 } 
               
             }).toArray().then(function(docs) {
-                var newID = parseInt(docs[0].short_urlID);
-                newID++;
+                var oldID = parseInt(docs[0].short_urlID);
+                oldID++;
+                var newID = oldID.toString();
                 var doc = {
                   "original_url": urlParam, 
                   "short_urlID": newID
