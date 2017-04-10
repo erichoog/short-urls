@@ -128,11 +128,9 @@ app.get('/:id', function (req, res) {
     var reqParam = req.params.id;
 
    var collection = db.collection('shorturls');
-    collection.findOne({'short_urlID': reqParam}).then(function (doc) {
+    collection.find().toArray.then(function (doc) {
       console.log(doc);       
          
-    
-      
       if (doc) {
     			res.json(doc)
   		} else {
