@@ -53,42 +53,42 @@ app.get('/new/:longurl(*)', function (req, res) {
     var collection = db.collection( 'shorturls' );
     collection.find({original_url: urlParam}).toArray().then(
       function(docs) {
-          if (docs.length == 1) {
-            console.log('Found existing shorturl.' + docs[0]);
-            // return original_url and short_url
-            var shortUrl = req.protocol + '://' + req.get('host') + '/' + docs[0].short_urlID;
-            res.json({original_url: urlParam, short_url: shortUrl});
-          }
-          else if (docs.length == 0) {
-            console.log("TEST1");
+        if (docs.length == 1) {
+          console.log('Found existing shorturl.' + docs[0]);
+          // return original_url and short_url
+          var shortUrl = req.protocol + '://' + req.get('host') + '/' + docs[0].short_urlID;
+          res.json({original_url: urlParam, short_url: shortUrl});
+        }
+        else if (docs.length == 0) {
+          console.log("TEST1");
 
-            collection.aggregate([
-                { $sort : { "short_urlID": 1 }} 
-              ], { cursor: { batchSize: 1 } 
-                
-              }).toArray().then(function(docs) {
-                  console.log(docs[0].short_urlID);
-              });
-            
-            var doc = {
-              "original_url": urlParam, 
-              "short_urlID": 2
-            };
+          collection.aggregate([
+              { $sort : { "short_urlID": 1 }} 
+            ], { cursor: { batchSize: 1 } 
+              
+            }).toArray().then(function(docs) {
+                console.log(docs[0].short_urlID);
+            });
+          
+          var doc = {
+            "original_url": urlParam, 
+            "short_urlID": 2
+          };
               
           collection.insertOne(doc, 
-            function (err, result){
-              if (err) {
-                res.json({error: "Error: Insert operation failed " + err})
-              }
-              else {
-                var shortUrl = req.protocol + '://' + req.get('host') + '/' + doc.short_urlID;
-                res.json({original_url: urlParam, short_url: shortUrl});
-              }
-            })
-          }
-          else {
-            res.json({error: "There was an error creating short url"});
-          }
+          function (err, result){
+            if (err) {
+              res.json({error: "Error: Insert operation failed " + err})
+            }
+            else {
+              var shortUrl = req.protocol + '://' + req.get('host') + '/' + doc.short_urlID;
+              res.json({original_url: urlParam, short_url: shortUrl});
+            }
+          })
+        }
+        else {
+          res.json({error: "There was an error creating short url"});
+        }
   
 }); 
 
