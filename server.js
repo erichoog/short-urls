@@ -52,11 +52,7 @@ app.get('/new/:longurl(*)', function (req, res) {
     // if valid store in MongoDB and create a number for that url
     var collection = db.collection( 'shorturls' );
     collection.find({original_url: urlParam}).toArray().then(
-      function( err, docs ) {
-        if ( err ) {
-          console.log( 'Error: Find operation failed' );
-          res.json({error: "Error: Find operation failed " + err})
-        } else {
+      function(docs) {
           if (docs.length == 1) {
             console.log('Found existing shorturl.' + docs[0]);
             // return original_url and short_url
@@ -93,10 +89,7 @@ app.get('/new/:longurl(*)', function (req, res) {
           else {
             res.json({error: "There was an error creating short url"});
           }
-        }
-      });
-    
-  }
+  
 }); 
 
 app.get('/:id', function (req, res) {
