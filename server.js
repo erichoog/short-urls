@@ -173,7 +173,7 @@ app.get('/:id', function (req, res) {
 
 var getShortUrl = function(short_urlID, db, callback) {
     var collection = db.collection('shorturls');
-    collection.findOne({'short_urlID': short_urlID}.then(function (doc) {
+    collection.findOne({'short_urlID': short_urlID}).then(function (doc) {
       console.log(doc);       
       callback(doc);     
     });
