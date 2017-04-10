@@ -62,29 +62,36 @@ app.get('/new/:longurl(*)', function (req, res) {
         else if (docs.length == 0) {
           console.log("TEST1");
 
+          var doc = {
+            "original_url": urlParam, 
+            "short_urlID": 2
+          };
+          
+          
+
           collection.aggregate([
               { $sort : { "short_urlID": -1 }} 
             ], { cursor: { batchSize: 1 } 
               
             }).toArray().then(function(docs) {
-                console.log(docs[0].short_urlID);
+                var newID = parseInt(docs[0].short_urlID);
+                newID++;
+                var doc = {
+                  "original_url": urlParam, 
+                  "short_urlID": newID
+                };
+                
+                collection.insertOne(doc, 
+                  function (err, result){
+                    if (err) {
+                      res.json({error: "Error: Insert operation failed " + err})
+                    }
+                    else {
+                      var shortUrl = req.protocol + '://' + req.get('host') + '/' + doc.short_urlID;
+                      res.json({original_url: urlParam, short_url: shortUrl});
+                    }
+                  });
             });
-          
-          var doc = {
-            "original_url": urlParam, 
-            "short_urlID": 2
-          };
-              
-          collection.insertOne(doc, 
-          function (err, result){
-            if (err) {
-              res.json({error: "Error: Insert operation failed " + err})
-            }
-            else {
-              var shortUrl = req.protocol + '://' + req.get('host') + '/' + doc.short_urlID;
-              res.json({original_url: urlParam, short_url: shortUrl});
-            }
-          })
         }
         else {
           res.json({error: "There was an error creating short url"});
