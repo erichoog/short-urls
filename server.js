@@ -128,16 +128,30 @@ app.get('/:id', function (req, res) {
     var reqParam = req.params.id;
 
    var collection = db.collection('shorturls');
-    collection.find({'short_urlID': reqParam}).toArray().then(function (doc) {
-      console.log(doc);       
+    collection.find({short_urlID: reqParam}).toArray().then(function (docs) {
+      
+      if (docs.length == 1) {
+        console.log('Found url.  Redirecting to: ' + docs[0].original_url );
+        res.redirect(docs[0].original_url);
+      }
+      else if (docs.length == 0) {
+        res.json({error: "There was an error finding the original_url.  Param: " + req.params.id.toString() + ' Doc Count: ' + docs.length});
+      }
+      else { 
+        res.json({error: "There was an error finding the original_url - too many"});
+        console.log(docs);
+      }
+      
+      
+    //   console.log(doc);       
          
-      if (doc) {
-    			res.json(doc)
-  		} else {
-    			res.send(JSON.stringify({
-    				error : 'Error'
-    			}))
-    		}
+    //   if (doc) {
+    // 			res.json(doc)
+  		// } else {
+    // 			res.send(JSON.stringify({
+    // 				error : 'Error'
+    // 			}))
+    // 		}
     });
       
       //console.log(doc);
