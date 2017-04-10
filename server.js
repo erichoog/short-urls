@@ -127,11 +127,11 @@ app.get('/:id', function (req, res) {
   // redirect to that website
     var reqParam = req.params.id;
 
-    getShortUrl(reqParam, db, function(items) {
-      console.log(items);
+    getShortUrl(reqParam, db, function(docs) {
+      console.log(docs);
       
-      if (items) {
-    			res.json(items)
+      if (docs) {
+    			res.json(docs)
   		} else {
     			res.send(JSON.stringify({
     				error : 'Error'
@@ -171,11 +171,11 @@ app.get('/:id', function (req, res) {
   
 });
 
-function getShortUrl(short_urlID, db, callback) {
+var getShortUrl = function(short_urlID, db, callback) {
     var collection = db.collection('shorturls');
-    collection.find({short_urlID: short_urlID}).toArray(function (err, items) {
-      console.log(items);       
-      return callback(items);     
+    collection.find({'short_urlID': short_urlID}).toArray(function (err, docs) {
+      console.log(docs);       
+      callback(docs);     
     });
   }
 
