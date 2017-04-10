@@ -127,8 +127,11 @@ app.get('/:id', function (req, res) {
   // redirect to that website
     var reqParam = req.params.id;
 
-    getShortUrl(reqParam, db, function(doc) {
-      console.log(doc);
+   var collection = db.collection('shorturls');
+    collection.findOne({'short_urlID': reqParam}).then(function (doc) {
+      console.log(doc);       
+         
+    
       
       if (doc) {
     			res.json(doc)
